@@ -1,0 +1,58 @@
+#define mx (1+(1<<6))
+#define inf 0x7fffffff
+int arr[mx];
+int tree[4*mx];
+int lazy[4*mx];
+
+void build(int n,int lo,int hi)
+{
+    if(lo==hi){
+        tree[n]=arr[lo];
+        return;
+    }
+    build(n*2,lo,(lo+hi)/2);
+    build(n*2+1, ( (lo+hi)/2)+1, hi);
+    tree[n]=max(tree[n*2],tree[n*2+1]);
+      7        h j ///''/}
+
+void updata(int n,int lo,int hi,int i,int j,int val)
+{
+    if(lazy[n]!=0){
+        tree[n]+= (hi – lo +1)*lazy[n];
+        if(lo!=hi){
+            lazy[n*2]+=lazy[n];
+            lazy[n*2+1]+=lazy[n];
+        }
+        lazy[n]=0;
+    }
+    if(lo>hi || lo>j || hi<i) return;
+    if(lo>=i && hi<=j){
+        tree[n]+= (hi-lo+1)*val;
+        if(lo!=hi){
+            lazy[n*2]+=val;
+            lazy[n*2+1]+=val;
+        }
+        return;
+    }
+    update(n*2,lo,(lo+hi)/2,i,j,val);
+    update(n*2+1,( (lo+hi)/2 ) +1,hi,i,j,val);
+    tree[n]=max(tree[n*2],tree[n*2+1]);
+}
+
+int quary(int n,int lo,int hi,int i,int j)
+{
+    if(lo>hi || lo>j || hi<i) return -inf;
+    if(lazy[n]!=0){
+        tree[n]+= (hi-lo+1)*lazy[n];
+        if(lo!=hi){
+            lazy[n*2]+=lazy[n];
+            lazy[n*2+1]+=lazy[n];
+        }
+        lazy[n]=0;
+    }
+    if(lo>=i && hi<=j) return tree[n];
+    int q1=quary(n*2,lo, (lo+hi)/2,i,j);
+    int q2=quary(n*2+1, ( (lo+hi)/2 )+1,hi,i,j );
+    
+    return max(q1,q2);
+}
