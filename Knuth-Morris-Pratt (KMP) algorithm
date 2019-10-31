@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> compute_prefix(string ptr)
+{
+    int m=ptr.size();
+    vector<int>prefix(m+1);
+    prefix[1]=0;
+    int k=0;
+
+    for(int i=2;i<=m;i++){
+        while(k>0 and ptr[k+1]!=ptr[i])
+            k=prefix[k];
+
+        if(ptr[k+1]==ptr[i]) k=k+1;
+        prefix[i]=k;
+    }
+}
+
+vector<int>KMP_match(string txt,string ptr)
+{
+    int n=txt.size(),m=ptr.size();
+    vector<int>prefix=compute_prefix(ptr);
+    int q=0;
+    vector<int>match_pos;
+    for(int i=1;i<=n;i++){
+        while(q>0 and ptr[q+1]!=txt[i]) q=prefix[q];
+        if(ptr[q+1]==txt[i]) q=q+1;
+        if(q==m){
+            //cout<<"LL ";
+            match_pos.push_back(i-m);
+            q=prefix[q];
+        }
+    }
+
+    return match_pos;
+}
+
+int main()
+{
+    string s,s1="",s2;
+    cin>>s1>>s2;
+
+    vector<int>data=KMP_match(s1,s2);
+
+    for(int i=0;i<data.size();i++)
+        cout<<data[i]<<" ";
+
+    return 0;
+}
