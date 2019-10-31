@@ -1,0 +1,24 @@
+
+
+const int k=555;
+int query(int a,int b)
+{
+	int block_a=a/k,block_b=b/k;
+	if(block_a==block_b){
+		int res=0;
+		for(int i=a;i<=b;i++){
+			res+=data[i];
+		}
+		return res;
+	}
+
+	int res=0;
+
+	for(int i=a;i<=k*(block_a+1)-1;i++) res+=data[i];
+
+	for(int i=block_a+1;i<block_b;i++) res+=data[i];
+
+	for(int i=k*block_b;i<=b;i++) res+=data[i];
+
+	return res;
+}
